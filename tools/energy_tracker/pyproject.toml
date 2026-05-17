@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nat-energy-tracker"
+version = "0.1.0"
+description = "Tasmota smart plug energy tracking tool for the NVIDIA NeMo Agent Toolkit"
+readme = "../../README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [
+    { name = "Ingmar Stapel" }
+]
+keywords = ["nvidia-nat", "nemo-agent-toolkit", "tasmota", "agentic-ai", "smart-home"]
+dependencies = [
+    "nvidia-nat",
+    "pydantic",
+    "httpx",
+]
+
+[project.urls]
+Homepage = "https://github.com/custom-build-robots/nemo-agent-toolkit-examples"
+Repository = "https://github.com/custom-build-robots/nemo-agent-toolkit-examples"
+
+# NAT plugin discovery hook — without this entry point NAT will not find
+# the energy_tracker function inside your venv.
+[project.entry-points."nat.components"]
+energy_tracker = "energy_tracker_tool"
+
+[tool.setuptools]
+py-modules = ["energy_tracker_tool"]
