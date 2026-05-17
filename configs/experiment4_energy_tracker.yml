@@ -1,0 +1,86 @@
+# =============================================================================
+# Experiment 4: Energy Tracker — Tasmota smart plug integration
+# =============================================================================
+# A ReAct agent that uses the custom energy_tracker tool to read current
+# power consumption from Tasmota smart plugs over HTTP. Demonstrates a
+# real-world Physical AI bridge: agent asks a question, tool reaches out
+# to physical hardware on the local network, returns live measurements.
+#
+# Prerequisites: install the tool first
+#   cd ~/nat-playground
+#   source .venv/bin/activate
+#   uv pip install -e tools/energy_tracker
+#
+# Adjust the IP addresses below to match your own Tasmota devices.
+#
+# Try queries like:
+#   nat run --config_file experiment4_energy_tracker.yml \
+#     --input "Läuft die Waschmaschine gerade?"
+#
+#   nat run --config_file experiment4_energy_tracker.yml \
+#     --input "Wie viel Strom verbraucht der Trockner aktuell?"
+#
+#   nat run --config_file experiment4_energy_tracker.yml \
+#     --input "Wie viel Energie zieht die Steckdose 192.168.178.20 gerade?"
+#
+#   nat run --config_file experiment4_energy_tracker.yml \
+#     --input "Sind beide Geräte fertig?"
+# =============================================================================
+
+llms:
+  ollama_llm:
+    _type: openai
+    api_key: "EMPTY"
+    base_url: "http://localhost:11434/v1"
+    model_name: "qwen2.5:7b-instruct"
+    temperature: 0.0
+    max_retries: 3
+
+functions:
+  energy_tracker:
+    _type: energy_tracker
+    idle_threshold_w: 5.0
+    timeout_seconds: 5.0
+    devices:
+      washing_machine:
+        ip: "192.168.178.20"
+        aliases:
+          - "waschmaschine"
+          - "washer"
+          - "wash"
+      dryer:
+        ip: "192.168.178.52"
+        aliases:
+          - "wäschetrockner"
+          - "waeschetrockner"
+          - "trockner"
+          - "tumble dryer"
+
+workflow:
+  _type: react_agent
+  tool_names: [energy_tracker]
+  llm_name: ollama_llm
+  system_prompt: |
+    Du bist ein technischer Assistent für den Haushalt.
+    Antworte AUSSCHLIESSLICH auf Deutsch.
+
+    Du hast Zugriff auf die folgenden Tools:
+
+    {tools}
+
+    Verwende folgendes Format:
+
+    Question: die Frage
+    Thought: überlege auf Deutsch, was zu tun ist
+    Action: eines von [{tool_names}]
+    Action Input: die Eingabe für das Tool (Gerätename, IP-Adresse, oder leerer String "")
+    Observation: das Ergebnis
+    Thought: Ich kenne jetzt die Antwort
+    Final Answer: eine klare, hilfreiche Antwort auf Deutsch.
+                  Erkläre kurz, ob die Geräte laufen, fertig sind oder im Standby,
+                  und nenne die wichtigsten Messwerte (Leistung in Watt,
+                  Energieverbrauch heute) wenn relevant.
+
+    Beginne!
+  verbose: true
+  parse_agent_response_max_retries: 3
