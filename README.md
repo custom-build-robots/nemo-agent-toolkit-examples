@@ -10,30 +10,13 @@ This repository accompanies a three-part series on agentic AI with NAT:
 2. **[NeMo Agent Toolkit — GenAI Agent Orchestration, Local](https://ai-box.eu/en/large-language-models-en/nemo-agent-toolkit-genai-agent-orchestrierung-lokal/2288/)** — The ReAct loop in detail, tool descriptions as the primary control lever, and writing your first custom Python tool (`gpu_status` querying `nvidia-smi`).
 3. **[NeMo Agent Toolkit Multi-Agent — The Supervisor Pattern, Local](https://ai-box.eu/en/news/nemo-agent-toolkit-multi-agent-supervisor-pattern-local/2309/)** — Three specialist ReAct agents under one supervisor, model-size considerations, and the `num_ctx` trap.
 
-## Repository Layout
-nemo-agent-toolkit-examples/
-├── configs/
-│   ├── ollama_agent.yml                    # Minimal "hello world" ReAct agent
-│   ├── ollama_agent_system_prompt.yml      # With custom system prompt
-│   ├── experiment1_tool_descriptions.yml   # Two-tool, tool-selection demo
-│   ├── experiment2_gpu_agent.yml           # Uses the custom gpu_status tool
-│   ├── experiment3_multi_agent.yml         # Supervisor + 3 specialist agents
-│   └── experiment4_energy_tracker.yml      # Tasmota smart-plug integration
-└── tools/
-├── gpu_status/                         # Custom tool: queries nvidia-smi
-│   ├── gpu_status_tool.py
-│   └── pyproject.toml
-└── energy_tracker/                     # Custom tool: queries Tasmota plugs
-├── energy_tracker_tool.py
-└── pyproject.toml
-
 ## Prerequisites
 
 - Ubuntu 24.04 LTS (or comparable Linux)
-- NVIDIA GPU with current drivers — `nvidia-smi` reachable from the host
+- NVIDIA GPU with current drivers - `nvidia-smi` reachable from the host
 - Ollama running with the OpenAI-compatible API on port 11434
 - Python 3.11, 3.12 or 3.13
-- NAT installed in a Python venv — see the installation blog post above
+- NAT installed in a Python venv - see the installation blog post above
 
 ## Quick Start
 
