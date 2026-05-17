@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nat-gpu-status"
+version = "0.1.0"
+description = "GPU status tool for NeMo Agent Toolkit"
+requires-python = ">=3.11"
+dependencies = [
+    "nvidia-nat",
+    "pydantic",
+]
+
+[project.entry-points."nat.components"]
+gpu_status = "gpu_status_tool"
+
+[tool.setuptools]
+py-modules = ["gpu_status_tool"]

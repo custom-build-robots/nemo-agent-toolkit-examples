@@ -1,0 +1,41 @@
+llms:
+  ollama_llm:
+    _type: openai
+    api_key: "EMPTY"
+    base_url: "http://localhost:11434/v1"
+    model_name: "qwen3.6:27b"
+    temperature: 0.0
+    max_retries: 3
+
+functions:
+  current_datetime:
+    _type: current_datetime
+  wikipedia_search:
+    _type: wiki_search
+    max_results: 3
+
+workflow:
+  _type: react_agent
+  tool_names: [current_datetime, wikipedia_search]
+  llm_name: ollama_llm
+  system_prompt: |
+    Du bist ein hilfsbereiter deutschsprachiger Assistent.
+    Antworte AUSSCHLIESSLICH auf Deutsch.
+
+    Du hast Zugriff auf die folgenden Tools:
+
+    {tools}
+
+    Verwende folgendes Format:
+
+    Question: die Frage
+    Thought: überlege auf Deutsch
+    Action: eines von [{tool_names}]
+    Action Input: die Eingabe
+    Observation: das Ergebnis
+    Thought: Ich kenne die Antwort
+    Final Answer: die finale Antwort
+
+    Beginne!
+  verbose: true
+  parse_agent_response_max_retries: 3

@@ -1,0 +1,45 @@
+# configs/ollama_time_agent.yml
+# NAT-Workflow mit Ollama als Inferenz-Backend
+llms:
+  ollama_llm:
+    _type: openai
+    api_key: "EMPTY"
+    base_url: "http://localhost:11434/v1"
+    model_name: "qwen2.5:7b-instruct"
+    temperature: 0.0
+    max_retries: 3
+
+functions:
+  current_datetime:
+    _type: current_datetime
+  wikipedia_search:
+    _type: wiki_search
+    max_results: 3
+
+workflow:
+  _type: react_agent
+  tool_names: [current_datetime, wikipedia_search]
+  llm_name: ollama_llm
+  system_prompt: |
+    Du bist ein hilfsbereiter deutschsprachiger Assistent.
+    WICHTIG: Antworte AUSSCHLIESSLICH auf Deutsch. Auch deine Gedanken (Thoughts) müssen auf Deutsch sein.
+    Verwende NIEMALS Chinesisch oder eine andere Sprache.
+
+    Du hast Zugriff auf die folgenden Tools:
+
+    {tools}
+
+    Verwende folgendes Format für deine Antwort:
+
+    Question: die Eingabefrage, die du beantworten musst
+    Thought: überlege auf Deutsch, was als nächstes zu tun ist
+    Action: die auszuführende Aktion — muss eines der folgenden sein: [{tool_names}]
+    Action Input: die Eingabe für die Aktion
+    Observation: das Ergebnis der Aktion
+    ... (dieser Thought/Action/Action Input/Observation-Zyklus kann sich wiederholen)
+    Thought: Ich kenne jetzt die finale Antwort
+    Final Answer: die finale Antwort auf die ursprüngliche Frage — auf Deutsch
+
+    Beginne!
+  verbose: true
+  parse_agent_response_max_retries: 3

@@ -1,0 +1,40 @@
+llms:
+  ollama_llm:
+    _type: openai
+    api_key: "EMPTY"
+    base_url: "http://localhost:11434/v1"
+    model_name: "qwen2.5:7b-instruct"
+    temperature: 0.0
+    max_retries: 3
+
+functions:
+  gpu_status:
+    _type: gpu_status
+  current_datetime:
+    _type: current_datetime
+
+workflow:
+  _type: react_agent
+  tool_names: [gpu_status, current_datetime]
+  llm_name: ollama_llm
+  system_prompt: |
+    Du bist ein technischer Assistent für KI-Infrastruktur.
+    Antworte AUSSCHLIESSLICH auf Deutsch.
+
+    Du hast Zugriff auf die folgenden Tools:
+
+    {tools}
+
+    Verwende folgendes Format:
+
+    Question: die Frage
+    Thought: überlege auf Deutsch
+    Action: eines von [{tool_names}]
+    Action Input: {{}}
+    Observation: das Ergebnis
+    Thought: Ich kenne die Antwort
+    Final Answer: eine fundierte Antwort auf Deutsch
+
+    Beginne!
+  verbose: true
+  parse_agent_response_max_retries: 3
