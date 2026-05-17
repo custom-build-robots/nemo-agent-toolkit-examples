@@ -11,3 +11,67 @@ This repository accompanies a three-part series on agentic AI with NAT:
 3. **[NeMo Agent Toolkit Multi-Agent — The Supervisor Pattern, Local](https://ai-box.eu/en/news/nemo-agent-toolkit-multi-agent-supervisor-pattern-local/2309/)** — Three specialist ReAct agents under one supervisor, model-size considerations, and the `num_ctx` trap.
 
 ## Repository Layout
+nemo-agent-toolkit-examples/
+├── configs/
+│   ├── ollama_agent.yml                    # Minimal "hello world" ReAct agent
+│   ├── ollama_agent_system_prompt.yml      # With custom system prompt
+│   ├── experiment1_tool_descriptions.yml   # Two-tool, tool-selection demo
+│   ├── experiment2_gpu_agent.yml           # Uses the custom gpu_status tool
+│   ├── experiment3_multi_agent.yml         # Supervisor + 3 specialist agents
+│   └── experiment4_energy_tracker.yml      # Tasmota smart-plug integration
+└── tools/
+├── gpu_status/                         # Custom tool: queries nvidia-smi
+│   ├── gpu_status_tool.py
+│   └── pyproject.toml
+└── energy_tracker/                     # Custom tool: queries Tasmota plugs
+├── energy_tracker_tool.py
+└── pyproject.toml
+
+## Prerequisites
+
+- Ubuntu 24.04 LTS (or comparable Linux)
+- NVIDIA GPU with current drivers — `nvidia-smi` reachable from the host
+- Ollama running with the OpenAI-compatible API on port 11434
+- Python 3.11, 3.12 or 3.13
+- NAT installed in a Python venv — see the installation blog post above
+
+## Quick Start
+
+```bash
+git clone https://github.com/custom-build-robots/nemo-agent-toolkit-examples.git
+cd nemo-agent-toolkit-examples
+
+# Copy configs and tools into your NAT playground
+cp configs/* ~/nat-playground/configs/
+cp -r tools/* ~/nat-playground/tools/
+
+# Activate your NAT venv and install the custom tools
+cd ~/nat-playground
+source .venv/bin/activate
+uv pip install -e tools/gpu_status
+uv pip install -e tools/energy_tracker
+
+# Pull the required Ollama models
+ollama pull qwen2.5:7b-instruct      # for experiments 1, 2, 4
+ollama pull qwen3.6:27b              # for experiment 3 (multi-agent)
+
+# Run an experiment
+cd ~/nat-playground/configs
+nat run --config_file experiment2_gpu_agent.yml \
+  --input "What is the current GPU utilization?"
+```
+
+## Tested On
+
+- **Workstation:** NVIDIA RTX A6000 Ada (48 GB VRAM)
+- **OS:** Ubuntu 24.04 LTS
+- **NAT version:** 1.6
+- **Ollama version:** 0.5+
+
+## License
+
+[MIT](LICENSE)
+
+## Author
+
+[Ingmar Stapel](https://github.com/custom-build-robots) — maker, AI infrastructure tinkerer, author of [ai-box.eu](https://ai-box.eu/).
