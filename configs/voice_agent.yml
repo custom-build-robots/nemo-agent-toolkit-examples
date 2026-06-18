@@ -6,8 +6,6 @@ llms:
     model_name: "qwen3.5:4b"   # z. B. qwen2.5:7b-instruct
     temperature: 0.0
     max_retries: 3
-    # Agent-Workflows brauchen ein größeres Context-Window als der Ollama-Default
-    num_ctx: 26384
 
 functions:
   current_datetime:
